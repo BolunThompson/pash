@@ -189,6 +189,11 @@ class BaseParser(argparse.ArgumentParser):
             action="store_true",
             default=False,
         )
+        self.add_argument( "--bash",
+            help="(experimental) interpret the input as a bash script file",
+            action="store_true",
+        )
+
 
 
 class RunnerParser(BaseParser):
