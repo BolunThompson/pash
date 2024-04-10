@@ -11,12 +11,79 @@ regions. The pass serializes all candidate dataflow regions:
 The PaSh runtime then deserializes the(m, compiles them (if safe) and optimizes them.
 """
 
+import copy
+import pickle
+
+import config
+
 from env_var_names import *
 from shell_ast.ast_util import *
-from shell_ast.preprocess_ast_cases import preprocess_node
-from shell_ast.transformation_options import AbstractTransformationState
+from shell_ast.transformation_options import AbstractTransformationState, TransformationType
+from shasta.ast_node import ast_match
+from shasta.json_to_ast import to_ast_node
+from parse import from_ast_objects_to_shell
+from speculative import util_spec
+
+##
+## Preprocessing
+##
+
+## The preprocessing pass replaces all _candidate_ dataflow regions with
+## calls to PaSh's runtime to let it establish if they are actually dataflow
+## regions. The pass serializes all candidate dataflow regions:
+## - A list of ASTs if at the top level or
+## - an AST subtree if at a lower level
+##
+## The PaSh runtime then deserializes the(m, compiles them (if safe) and optimizes them.
+
+preprocess_cases = {
+    "Pipe": (lambda trans_options, last_object:
+             lambda ast_node: preprocess_node_pipe(ast_node, trans_options, last_object=last_object)),
+    "Command": (lambda trans_options, last_object:
+                lambda ast_node: preprocess_node_command(ast_node, trans_options, last_object=last_object)),
+    "Redir": (lambda trans_options, last_object:
+              lambda ast_node: preprocess_node_redir(ast_node, trans_options, last_object=last_object)),
+    "Background": (lambda trans_options, last_object:
+                   lambda ast_node: preprocess_node_background(ast_node, trans_options, last_object=last_object)),
+    "Subshell": (lambda trans_options, last_object:
+                   lambda ast_node: preprocess_node_subshell(ast_node, trans_options, last_object=last_object)),
+    "For": (lambda trans_options, last_object:
+            lambda ast_node: preprocess_node_for(ast_node, trans_options, last_object=last_object)),
+    "While": (lambda trans_options, last_object:
+              lambda ast_node: preprocess_node_while(ast_node, trans_options, last_object=last_object)),
+    "Defun": (lambda trans_options, last_object:
+              lambda ast_node: preprocess_node_defun(ast_node, trans_options, last_object=last_object)),
+    "Semi": (lambda trans_options, last_object:
+             lambda ast_node: preprocess_node_semi(ast_node, trans_options, last_object=last_object)),
+    "Or": (lambda trans_options, last_object:
+           lambda ast_node: preprocess_node_or(ast_node, trans_options, last_object=last_object)),
+    "And": (lambda trans_options, last_object:
+            lambda ast_node: preprocess_node_and(ast_node, trans_options, last_object=last_object)),
+    "Not": (lambda trans_options, last_object:
+            lambda ast_node: preprocess_node_not(ast_node, trans_options, last_object=last_object)),
+    "If": (lambda trans_options, last_object:
+            lambda ast_node: preprocess_node_if(ast_node, trans_options, last_object=last_object)),
+    "Case": (lambda trans_options, last_object:
+             lambda ast_node: preprocess_node_case(ast_node, trans_options, last_object=last_object)),
+    "Select": (lambda trans_options, last_object:
+               lambda ast_node: preprocess_node_select(ast_node, trans_options, last_object=last_object)),
+    "Arith": (lambda trans_options, last_object:
+               lambda ast_node: preprocess_node_arith(ast_node, trans_options, last_object=last_object)),
+    "Cond": (lambda trans_options, last_object:
+               lambda ast_node: preprocess_node_cond(ast_node, trans_options, last_object=last_object)),
+    "ArithFor": (lambda trans_options, last_object:
+               lambda ast_node: preprocess_node_arith_for(ast_node, trans_options, last_object=last_object)),
+    "Coproc": (lambda trans_options, last_object:
+               lambda ast_node: preprocess_node_coproc(ast_node, trans_options, last_object=last_object)),
+    "Time": (lambda trans_options, last_object:
+               lambda ast_node: preprocess_node_time(ast_node, trans_options, last_object=last_object)),
+    "Group": (lambda trans_options, last_object:
+               lambda ast_node: preprocess_node_group(ast_node, trans_options, last_object=last_object)),
+}
 
 
+
+## Replace candidate dataflow AST regions with calls to PaSh's runtime.
 def replace_ast_regions(ast_objects, trans_options: AbstractTransformationState):
     """
     Replace candidate dataflow AST regions with calls to PaSh's runtime.
@@ -422,6 +489,27 @@ def preprocess_node_case(ast_node, trans_options, last_object=False):
                                               something_replaced=any(sth_replaced_cases),
                                               last_ast=last_object)
     return preprocessed_ast_object
+
+def preprocess_node_select(ast_node, trans_options, last_object=False):
+    pass
+
+def preprocess_node_arith(ast_node, trans_options, last_object=False):
+    pass
+
+def preprocess_node_cond(ast_node, trans_options, last_object=False):
+    pass
+
+def preprocess_node_arith_for(ast_node, trans_options, last_object=False):
+    pass
+
+def preprocess_node_coproc(ast_node, trans_options, last_object=False):
+    pass
+
+def preprocess_node_time(ast_node, trans_options, last_object=False):
+    pass
+
+def preprocess_node_group(ast_node, trans_options, last_object=False):
+    pass
 
 
 ## TODO: I am a little bit confused about how compilation happens.
