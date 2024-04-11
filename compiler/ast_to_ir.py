@@ -355,7 +355,7 @@ def naive_expand(argument, config):
 ##       might have assignments of its own, therefore requiring that we use them to properly expand.
 def expand_command_argument(argument, config):
     new_arguments = [argument]
-    if should_expand_argument(argument):
+    if(should_expand_argument(argument)) or True:
         new_arguments = naive_expand(argument, config)
     return new_arguments
 
@@ -386,6 +386,9 @@ def compile_arg_char(arg_char: ArgChar, fileIdGen, config):
 
 
 def compile_command_argument(argument, fileIdGen, config):
+    BASH_MODE = True
+    if BASH_MODE:
+        argument = expand_command_argument(argument, config)
     compiled_argument = [compile_arg_char(char, fileIdGen, config) for char in argument]
     return compiled_argument
 
