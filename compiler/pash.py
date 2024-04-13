@@ -10,8 +10,6 @@ from util import *
 import config
 from cli import RunnerParser
 
-BASH_MODE = True
-
 LOGGING_PREFIX = "PaSh: "
 
 
