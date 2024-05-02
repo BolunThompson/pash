@@ -63,7 +63,6 @@ def preprocess_and_execute_asts(
         )
     else:
         return_code = 0
-
     return return_code
 
 
