@@ -3,14 +3,11 @@ import subprocess
 from shasta.ast_node import *
 from sh_expand.expand import expand_command, ExpansionState
 
+from config import BASH_MODE
 from shell_ast.ast_util import *
 from ir import *
 from util import *
 from parse import from_ast_objects_to_shell
-
-from custom_error import *
-
-BASH_MODE = os.environ.get('pash_shell') == 'bash'
 
 ## TODO: Separate the ir stuff to the bare minimum and
 ##       try to move this to the shell_ast folder.
@@ -475,6 +472,8 @@ def naive_expand(argument, config):
 ##       might have assignments of its own, therefore requiring that we use them to properly expand.
 def expand_command_argument_bash(argument, config):
     new_arguments = [argument]
+    # TODO: Does should_expand_argument work properly?
+    # if not, what changes need to be made?
     if True or should_expand_argument(argument):
         new_arguments = naive_expand(argument, config)
     return new_arguments
@@ -506,7 +505,6 @@ def compile_arg_char(arg_char: ArgChar, fileIdGen, config):
 
 
 def compile_command_argument(argument, fileIdGen, config):
-    global BASH_MODE
     if BASH_MODE:
         argument = expand_command_argument_bash(argument, config)
     compiled_argument = [compile_arg_char(char, fileIdGen, config) for char in argument]

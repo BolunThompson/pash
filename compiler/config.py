@@ -38,8 +38,8 @@ PASH_TMP_PREFIX = os.getenv("PASH_TMP_PREFIX")
 
 SOCKET_BUF_SIZE = 8192
 
+BASH_MODE = os.getenv('pash_shell') == 'bash'
 BASH_VERSION = tuple(int(i) for i in os.getenv("PASH_BASH_VERSION").split(" "))
-
 
 ##
 ## Global configuration used by all pash components
