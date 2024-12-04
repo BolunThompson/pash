@@ -452,7 +452,8 @@ def naive_expand(argument, config):
     log("Argument:", argument, "was expanded to:", expanded_string)
 
     ## Parse the expanded string back to an arg_char
-    chars_to_escape_when_no_quotes = [ord(c) for c in ['\\', '*', '?', '[', ']', '#', '<', '>', '~', ' ']]
+    special_chars = ["\\", "*", "?", "[", "]", "#", "<", ">", "~", " ", "(", ")", "`", "&", "|"]
+    chars_to_escape_when_no_quotes = [ord(c) for c in special_chars]
     expanded_arguments = parse_string_to_arguments(expanded_string)
     # we need to escape some characters if the argument is not quoted
     expanded_arguments = [EArgChar(arg[1]) if arg[1] in chars_to_escape_when_no_quotes \
