@@ -43,7 +43,7 @@ from custom_error import *
 import config
 
 
-## Creates a file id for a given resource
+## Creates a file id for a given resource 
 def create_file_id_for_resource(resource, fileIdGen):
     file_id = create_split_file_id(fileIdGen)
     file_id.set_resource(resource)
