@@ -247,9 +247,12 @@ def compile_command_to_DFG(fileIdGen, command, options, redirections=None):
             f"InputOutputInformation for {format_arg_chars(command)} not provided so considered side-effectful."
         )
     if io_info.has_other_outputs():
+        raise BaseException("YES", io_info)
         raise UnparallelizableError(
             f"Command {format_arg_chars(command)} has outputs other than streaming."
         )
+    else:
+        raise BaseException("NO", io_info)       
     para_info: ParallelizabilityInfo = (
         get_parallelizability_info_from_cmd_invocation_util(command_invocation)
     )
