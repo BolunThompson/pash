@@ -1,0 +1,6 @@
+digraph {
+	13 [label=cat]
+	node [shape=box]
+	"file-1" [label="/tmp/tmp.DGH1oohq4m"]
+	"file-1" -> 13
+}
