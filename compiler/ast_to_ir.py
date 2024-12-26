@@ -161,8 +161,10 @@ def compile_asts(ast_objects: "list[AstNode]", fileIdGen, config):
         ## the current returned ast.
         if not acc_ir is None:
             if isinstance(compiled_ast, IR):
+                log("acc_ir", compiled_ast)
                 acc_ir.background_union(compiled_ast)
             else:
+                log("else acc ir", compiled_ast)
                 ## TODO: Make this union the compiled_ast with the
                 ## accumulated IR, since the user wanted to run these
                 ## commands in parallel (Is that correct?)
@@ -180,8 +182,10 @@ def compile_asts(ast_objects: "list[AstNode]", fileIdGen, config):
             ## If the compiled ast is in background, start
             ## accumulating it
             if isinstance(compiled_ast, IR) and compiled_ast.is_in_background():
+                log("acc_ir", compiled_ast)
                 acc_ir = compiled_ast
             else:
+                log("else acc_ir", compiled_ast)
                 compiled_asts.append(compiled_ast)
 
     ## The final accumulator

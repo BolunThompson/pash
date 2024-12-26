@@ -251,11 +251,10 @@ def compile_command_to_DFG(fileIdGen, command, options, redirections=None):
         raise UnparallelizableError(
             f"Command {format_arg_chars(command)} has outputs other than streaming."
         )
-    else:
-        raise BaseException("NO", io_info)       
     para_info: ParallelizabilityInfo = (
         get_parallelizability_info_from_cmd_invocation_util(command_invocation)
     )
+    log(f"para_info {para_info}")
     if para_info is None:
         para_info = (
             ParallelizabilityInfo()
@@ -299,7 +298,7 @@ def compile_command_to_DFG(fileIdGen, command, options, redirections=None):
         parallelizer_list=parallelizer_list,
         cmd_related_properties=cmd_related_properties,
     )
-    # log(f'Dfg node: {dfg_node}')
+    log(f'Dfg node: {dfg_node}')
     node_id = dfg_node.get_id()
 
     ## Assign the from, to node in edges
