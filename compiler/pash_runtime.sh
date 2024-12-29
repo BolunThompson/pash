@@ -141,7 +141,7 @@ else
         pash_redir_output echo "$$: (5) BaSh script exited with ec: $pash_runtime_final_status"
     else 
         function run_parallel() {
-            trap inform_daemon_exit SIGTERM SIGINT EXIT
+            trap inform_daemon_exit SIGTERM SIGINT
             export SCRIPT_TO_EXECUTE="$pash_script_to_execute"
             source "$RUNTIME_DIR/pash_restore_state_and_execute.sh"
             inform_daemon_exit
